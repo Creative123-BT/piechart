@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pizza Slices Fan Animation with Slice Text</title>
+  <style>
+    body {
+      background: #f6f6f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200vh; /* For scroll testing */
+      margin: 0;
+    }
+    .container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin-top: 100vh; /* To test viewport entry */
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .logo-text {
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      fill: #234;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+    .slice-label {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      fill: #222;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg id="pizza-svg" viewBox="0 0 300 300">
+      <g id="slices"></g>
+      <g id="slice-labels"></g>
+      <circle cx="150" cy="150" r="30" fill="white" stroke="black" stroke-width=""/>
+      <!-- <text x="150" y="150" class="logo-text">Logo</text> -->
+       <!-- PNG logo centered at (150,150), size 38x38 px (1cm approx) -->
+<image href="logo.png" x="131" y="131" width="38" height="38" />
+
+    </svg>
+  </div>
+  <script>
+    // Constants
+    const centerX = 150, centerY = 150;
+    const circleRadius = 50;
+    const sliceOuterRadius = 200;
+    const numSlices = 7;
+    const sliceAngle = 51.42;
+    const sliceColors = [
+      "#ffb347", "#ff6961", "#77dd77", "#aec6cf", "#f49ac2", "#cfcfc4", "#b39eb5"
+    ];
+    const sliceTexts = [
+      "Slice 1", "Slice 2", "Slice 3", "Slice 4", "Slice 5", "Slice 6", "Slice 7"
+    ];
+
+    // Helper to create a slice path
+    function describeSlice(cx, cy, r1, r2, startAngle, endAngle) {
+      const rad = Math.PI / 180;
+      const x1 = cx + r1 * Math.cos(rad * startAngle);
+      const y1 = cy + r1 * Math.sin(rad * startAngle);
+      const x2 = cx + r2 * Math.cos(rad * startAngle);
+      const y2 = cy + r2 * Math.sin(rad * startAngle);
+      const x3 = cx + r2 * Math.cos(rad * endAngle);
+      const y3 = cy + r2 * Math.sin(rad * endAngle);
+      const x4 = cx + r1 * Math.cos(rad * endAngle);
+      const y4 = cy + r1 * Math.sin(rad * endAngle);
+
+      return `
+        M ${x1} ${y1}
+        L ${x2} ${y2}
+        A ${r2} ${r2} 0 0 1 ${x3} ${y3}
+        L ${x4} ${y4}
+        A ${r1} ${r1} 0 0 0 ${x1} ${y1}
+        Z
+      `;
+    }
+
+    // Add slices to SVG
+    const slicesGroup = document.getElementById('slices');
+    const labelsGroup = document.getElementById('slice-labels');
+    let sliceElements = [];
+    let labelElements = [];
+    for (let i = 0; i < numSlices; i++) {
+      // Slice path
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("fill", sliceColors[i % sliceColors.length]);
+      path.setAttribute("stroke", "#222");
+      path.setAttribute("stroke-width", "1.5");
+      path.setAttribute(
+        "d",
+        describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, 270, 270)
+      );
+      slicesGroup.appendChild(path);
+      sliceElements.push(path);
+
+      // Text label
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("class", "slice-label");
+      text.textContent = sliceTexts[i];
+      labelsGroup.appendChild(text);
+      labelElements.push(text);
+    }
+
+    // Animation function (runs once per entry)
+    let animationFrame;
+    function animateOnce() {
+      let frame = 0;
+      const totalFrames = 60;
+      function step() {
+        frame++;
+        let progress = Math.min(frame / totalFrames, 1); // 0..1
+        for (let i = 0; i < numSlices; i++) {
+          let baseAngle = i * sliceAngle;
+          let startAngle = 270 + progress * baseAngle;
+          let endAngle = startAngle + progress * sliceAngle;
+          sliceElements[i].setAttribute(
+            "d",
+            describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, startAngle, endAngle)
+          );
+          // Place text at the center of the slice arc
+          let midAngle = (startAngle + endAngle) / 2;
+          let labelRadius = (circleRadius + sliceOuterRadius) / 2;
+          let rad = Math.PI / 180;
+          let labelX = centerX + labelRadius * Math.cos(rad * midAngle);
+          let labelY = centerY + labelRadius * Math.sin(rad * midAngle);
+          labelElements[i].setAttribute("x", labelX);
+          labelElements[i].setAttribute("y", labelY);
+          labelElements[i].style.opacity = progress > 0.2 ? 1 : 0; // Fade in with animation
+        }
+        if (frame < totalFrames) {
+          animationFrame = requestAnimationFrame(step);
+        }
+      }
+      step();
+    }
+
+    // Reset slices to initial state
+    function resetSlices() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      for (let i = 0; i < numSlices; i++) {
+        sliceElements[i].setAttribute(
+          "d",
+          describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, 270, 270)
+        );
+        // Place label at center, hide it
+        labelElements[i].setAttribute("x", centerX);
+        labelElements[i].setAttribute("y", centerY);
+        labelElements[i].style.opacity = 0;
+      }
+    }
+
+    // Intersection Observer to trigger animation on each viewport entry
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateOnce();
+        } else {
+          resetSlices();
+        }
+      });
+    }, { threshold: 0.4 }); // Adjust threshold as needed
+
+    observer.observe(document.querySelector('.container'));
+  </script>
+</body>
+</html>
