@@ -1,181 +1,2453 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Pizza Slices Fan Animation with Slice Text</title>
-  <style>
-    body {
-      background: #f6f6f1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 200vh; /* For scroll testing */
-      margin: 0;
-    }
-    .container {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      margin-top: 100vh; /* To test viewport entry */
-    }
-    svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .logo-text {
-      font-family: Arial, sans-serif;
-      font-size: 18px;
-      fill: #234;
-      text-anchor: middle;
-      dominant-baseline: middle;
-      pointer-events: none;
-    }
-    .slice-label {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      fill: #222;
-      text-anchor: middle;
-      dominant-baseline: middle;
-      pointer-events: none;
-      user-select: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <svg id="pizza-svg" viewBox="0 0 300 300">
-      <g id="slices"></g>
-      <g id="slice-labels"></g>
-      <circle cx="150" cy="150" r="30" fill="white" stroke="black" stroke-width=""/>
-      <!-- <text x="150" y="150" class="logo-text">Logo</text> -->
-       <!-- PNG logo centered at (150,150), size 38x38 px (1cm approx) -->
-<image href="logo.png" x="131" y="131" width="38" height="38" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
 
-    </svg>
+    <title>Markets - US</title>
+    <link rel="icon" href="/assets/img/Logo/infinity.png" type="image/x-icon" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .navbar {
+         background: #fff !important;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
+        transition: background 0.3s, box-shadow 0.3s;
+        z-index: 999;
+      }
+      .navbar .nav-link {
+        color: #111 !important;
+        transition: color 0.2s;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .navbar .nav-link.active {
+        color: #9221e5 !important;
+      }
+      .navbar .nav-link:not(.active):hover {
+        color: #9221e5 !important;
+      }
+      .navbar .dropdown-toggle::after {
+        display: none !important;
+      }
+      /* --- SCROLLED STATE --- */
+      .navbar.scrolled {
+        background: #fff !important;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
+      }
+      .navbar.scrolled .nav-link {
+        color: #111 !important;
+      }
+      .navbar.scrolled .nav-link.active {
+        color: #9221e5 !important;
+      }
+      .navbar.scrolled .nav-link:not(.active):hover {
+        color: #9221e5 !important;
+      }
+      .dropdown-menu {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: none;
+        min-width: 120px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .dropdown-item {
+        color: #000;
+        font-size: 13px;
+        font-weight: 500;
+        transition: background 0.15s, color 0.15s;
+        cursor: pointer;
+      }
+
+      .dropdown-item:hover,
+      .dropdown-item.active,
+      .dropdown-item:focus
+       {
+        background: #9221e5;
+        color: #fff;
+      }
+      /* Default toggler icon (white) */
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280,0,0,0.85%29'  stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        transition: background-image 0.3s ease;
+      }
+
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 2rem;
+        letter-spacing: -1px;
+        transition: all 0.3s ease;
+        color: #fff !important;
+      }
+      .navbar.scrolled .navbar-brand {
+        color: #111 !important;
+      }
+      .navbar-brand img {
+        height: 25px;
+        width: auto;
+        margin-right: 8px;
+        margin-top: -3px;
+        transition: all 0.3s ease;
+      }
+
+      @media (max-width: 991px) {
+
+        .navbar-brand {
+          font-size: 1.5rem;
+        }
+     .navbar .navbar-collapse,.navbar-nav .dropdown-menu{
+          text-align: center;
+        }
+
+      }
+      @media (max-width: 575px) {
+
+        .navbar-brand {
+          font-size: 1.1rem;
+        }
+
+      }
+
+      @media (min-width: 1025px) {
+        .navbar .dropdown:hover > .dropdown-menu,
+        .navbar .dropdown-menu:hover {
+          display: block;
+        }
+      }
+
+      .main-heading {
+        text-align: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+      .main-heading img {
+        width: 160px;
+        height: auto;
+      }
+      .header-text {
+        text-align: center;
+        margin-bottom: 2.9rem;
+        font-size: 1rem;
+        font-weight: 500;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .graph-section {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        z-index: 3;
+        margin-top: 10px;
+      }
+      .graph-card {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+        padding: 10px;
+        width: 100%;
+        max-width: 1000px;
+        position: absolute;
+        left: 50%;
+        top: 0px; /* Overlap amount */
+        transform: translateX(-50%);
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+      }
+      .graph-img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 16px;
+      }
+      .immigrants-section {
+        background: linear-gradient(180deg, #4e16d9 0%, #9174e1 100%);
+        color: #fff;
+        padding: 9rem 0 4.5rem 0;
+        text-align: center;
+        position: relative;
+        border-radius: 15px;
+        margin-top: 20rem;
+        margin-bottom: 20px;
+        overflow: hidden;
+        min-height: 420px;
+      }
+      .immigrants-desc {
+        font-size: 0.9rem;
+        position: relative;
+        z-index: 2;
+      }
+      .immigrants-title-stroke {
+        font-size: 7.8rem;
+        font-weight: 900;
+        letter-spacing: 0.25em;
+        color: transparent;
+        -webkit-text-stroke: 1px #fff;
+        text-stroke: 1px #fff;
+        opacity: 0.3;
+        position: absolute;
+        top: 8.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        pointer-events: none;
+        user-select: none;
+        z-index: 1;
+        white-space: nowrap;
+        font-family: "Raleway", sans-serif;
+      }
+      .split-line {
+        position: absolute;
+        left: 3rem;
+        bottom: -0px;
+        font-size: 1.7rem;
+        font-weight: 300;
+        color: #fff;
+        opacity: 0.97;
+        z-index: 10;
+        text-align: left;
+        letter-spacing: 0.01em;
+        padding-top: 20px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 992px) {
+        .graph-card {
+          max-width: 80vw;
+          padding: 1.2rem 0.5rem;
+        }
+        .immigrants-title-stroke {
+          font-size: 4.7rem;
+          -webkit-text-stroke: 0.5px #fff;
+          text-stroke: 0.5px #fff;
+        }
+        .split-line {
+          left: 1.2rem;
+          font-size: 1.08rem;
+        }
+        .immigrants-section {
+          min-height: 320px;
+          padding-top: 7rem;
+          margin-top: 13rem;
+        }
+        .immigrants-desc {
+          font-size: 12px;
+        }
+      }
+      @media (max-width: 576px) {
+        .immigrants-section {
+          padding-top: 4.5rem;
+          padding-bottom: 2.2rem;
+          min-height: 250px;
+          margin-top: 6rem;
+        }
+        .graph-card {
+          padding: 0.7rem 0.3rem;
+        }
+        .immigrants-title-stroke {
+          font-size: 2.7rem;
+          -webkit-text-stroke: 1px #fff;
+          text-stroke: 1px #fff;
+        }
+        .immigrants-desc {
+          margin-top: 1rem;
+        }
+        .split-line {
+          left: 0.7rem;
+          font-size: 0.7rem;
+        }
+          .main-heading{
+          margin-top: 5rem !important;
+        }
+      }
+
+      .main-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 20px;
+        gap: 2vw;
+      }
+      .left-container {
+        flex: 1 1 350px;
+        min-width: 270px;
+        max-width: 600px;
+        margin-bottom: 2.5rem;
+      }
+      .main-title {
+        font-size: clamp(2.2rem, 6vw, 4.5rem);
+        font-weight: 800;
+        background: linear-gradient(to top, #4e16d9 0%, #9174e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.1rem;
+        line-height: 1.05;
+        letter-spacing: -2px;
+      }
+      .main-desc {
+        font-size: 1.15rem;
+        color: #222;
+        margin-bottom: 0.5rem;
+        max-width: 480px;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+      }
+      .chart-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        scroll-snap-align: start;
+      }
+      .chart-wrapper {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         width: 100%;
+       }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: auto;
+        border-radius: 50%;
+        transition: transform 0.4s ease;
+        margin-top: -170px;
+      }
+      .center-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+      }
+
+      .center-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 50%;
+      }
+
+      #canadaChart {
+        width: 300px;
+        height: 300px;
+      }
+      canvas#canadaChart {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      @media (min-width: 768px) and (max-width: 1024px) {
+        #canadaChart {
+          width: 350px !important;
+          height: 350px !important;
+        }
+
+      }
+      @media (min-width: 1025px) {
+        #canadaChart {
+          width: 500px !important;
+          height: 500px !important;
+        }
+
+      }
+
+
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.05);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      .center-image.pulsing {
+        animation: pulse 0.4s ease;
+      }
+
+      @media (max-width: 900px) {
+        .main-container {
+          flex-direction: row;
+          align-items: start;
+          flex-wrap: nowrap;
+          padding-bottom: 2px;
+        }
+        .chart-container {
+          margin-top: -140px;
+        }
+        .center-image{
+          width: 40px;
+          height: 40px;
+        }
+      }
+      @media (max-width: 600px) {
+        .main-container {
+          flex-direction: column;
+          align-items: start;
+          padding-bottom: 10px;
+        }
+        .main-title {
+          font-size: 2rem;
+          text-align: center;
+          letter-spacing: 0.1rem;
+        }
+        .main-desc {
+          font-size: 1rem;
+          text-align: center;
+        }
+        .left-container {
+          flex: 1 1 180px;
+          margin-left: 0;
+        }
+        .chart-container {
+          max-width: 90%;
+          margin-top: -50px;
+        }
+      }
+
+
+      .immigration-future-section {
+        position: relative;
+        background: linear-gradient(180deg, #8c6de0 0%, #1e234b 100%);
+        overflow: hidden;
+      }
+      .immigration-watermark {
+        position: absolute;
+        top: 52%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10.8vw;
+        font-weight: 800;
+        color: transparent;
+        -webkit-text-stroke: 0.7px #fff;
+        text-stroke: 0.7px #fff;
+        opacity: 0.25;
+        letter-spacing: 0.2em;
+        white-space: nowrap;
+        z-index: 1;
+        pointer-events: none;
+        user-select: none;
+        text-align: center;
+        line-height: 160px;
+      }
+
+      @media (max-width: 991.98px) {
+        .immigration-watermark {
+          font-size: 11vw;
+          line-height: 120px;
+        }
+      }
+      @media (max-width: 575.98px) {
+        .immigration-future-section {
+          padding-right: 0 !important;
+          padding-left: 0 !important;
+        }
+        .immigration-watermark {
+          font-size: 11vw;
+          line-height: 80px;
+        }
+        .size {
+          font-size: 1.5rem !important;
+        }
+      }
+
+      .countries-section {
+        background: #f7f7fc;
+      }
+      .countries-title {
+        background: linear-gradient(to top, #8c6de0, #1e234b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.3rem;
+        letter-spacing: 0.01em;
+      }
+      .countries-subtitle {
+        color: #8c6de0;
+        font-size: 1.13rem;
+        font-weight: 500;
+        margin-top: -0.2rem;
+      }
+      .flag-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 0.3px solid #8c6de0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        margin-left: auto;
+        margin-right: auto;
+        transition: box-shadow 0.2s;
+      }
+      .flag-circle img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: contain;
+        background: #fff;
+        border: none;
+      }
+      .flag-circle:hover {
+        box-shadow: 0 0 0 4px #e0d7fc;
+      }
+      .country-label {
+        color: #807d7d;
+        font-size: 1.05rem;
+        margin-top: 0.15rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-align: center;
+      }
+
+      .col-3.col-md-2.col-lg-auto.text-center.right {
+        margin-right: 80px;
+      }
+      .col-3.col-md-2.col-lg-auto.text-center.left {
+        margin-left: 65px;
+      }
+
+      @media (max-width: 991.98px) {
+        .countries-title {
+          font-size: 1.5rem;
+        }
+        .countries-subtitle {
+          font-size: 1rem;
+        }
+        .flag-circle {
+          width: 90px;
+          height: 90px;
+        }
+        .flag-circle img {
+          width: 74px;
+          height: 74px;
+        }
+        .country-label {
+          font-size: 0.9rem;
+        }
+        .col-3.col-md-2.col-lg-auto.text-center.right {
+          margin-right: 0px;
+        }
+        .col-3.col-md-2.col-lg-auto.text-center.left {
+          margin-left: 0px;
+        }
+      }
+      @media (max-width: 575.98px) {
+        .countries-title {
+          font-size: 1.1rem;
+        }
+        .countries-subtitle {
+          font-size: 0.85rem;
+        }
+        .flag-circle {
+          width: 58px;
+          height: 58px;
+        }
+        .flag-circle img {
+          width: 46px;
+          height: 46px;
+        }
+        .country-label {
+          font-size: 0.7rem;
+        }
+        .col-3.col-md-2.col-lg-auto.text-center.right {
+          margin-right: 0px;
+        }
+        .col-3.col-md-2.col-lg-auto.text-center.left {
+          margin-left: 0px;
+        }
+      }
+
+      .brands-section {
+        position: relative;
+        background: url("./assets/img/Markets/United_States/Abstract.png")
+            center top no-repeat,
+          linear-gradient(180deg, #9174e1 0%, #4e16d9 100%);
+        background-size: 100%, 100% 400px;
+        background-repeat: no-repeat, no-repeat;
+        background-position: top, top;
+      }
+      .logo-card-container {
+        position: relative;
+        z-index: 3;
+        margin-top: 60px;
+      }
+      .logo-card {
+        border-radius: 32px;
+        min-height: 150px;
+        box-shadow: 0 3px 32px 0 rgba(44, 36, 101, 0.08);
+        position: relative;
+        margin-top: 0;
+      }
+      .brand-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 150px;
+        max-height: 60px;
+        width: 80%;
+        height: auto;
+        object-fit: contain;
+        margin: 0 auto;
+        display: block;
+        filter: grayscale(10%);
+        transition: filter 0.2s;
+      }
+      .brand-logo:hover {
+        filter: grayscale(0%) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
+      }
+      @media (max-width: 991.98px) {
+        .brand-logo {
+          max-width: 100px;
+          max-height: 46px;
+        }
+        .logo-card-container {
+          margin-top: -30px;
+        }
+      }
+      @media (max-width: 767.98px) {
+        .brand-logo {
+          max-width: 90px;
+          max-height: 28px;
+        }
+        .logo-card {
+          padding-left: 0.4rem !important;
+          padding-right: 0.4rem !important;
+        }
+        .logo-card-container {
+          margin-top: -30px;
+        }
+      }
+      @media (max-width: 575.98px) {
+        .brands-section h2 {
+          font-size: 1.15rem !important;
+        }
+      }
+
+      .case-img-box {
+        padding: 0;
+        width: 700px;
+        height: 700px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .case-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: transparent;
+      }
+
+      @media (max-width: 991.98px) {
+        .case-img-box {
+          width: 320px;
+          height: 320px;
+          border-radius: 24px;
+        }
+        .case-img {
+          border-radius: 24px;
+        }
+        .container-fluid.py-5 {
+          padding-top: 2rem !important;
+          padding-bottom: 2rem !important;
+        }
+        h1.fw-bold {
+          font-size: 2.1rem !important;
+        }
+        h2.fw-semibold {
+          font-size: 1.3rem !important;
+        }
+        .case-desc {
+        }
+      }
+      @media (max-width: 575.98px) {
+        .case-img-box {
+          width: 90vw;
+          height: auto;
+          min-width: 0;
+          min-height: 0;
+          padding: 0;
+        }
+        .case-img {
+          width: 60%;
+          height: auto;
+          border-radius: 18px;
+        }
+        h1.fw-bold {
+          font-size: 1.4rem !important;
+        }
+        h2.fw-semibold {
+          font-size: 1rem !important;
+        }
+        .case-desc {
+          font-size: 0.97rem !important;
+        }
+        .justify-content-center {
+        }
+      }
+
+      .card-custom {
+        border-radius: 15px;
+        transition: box-shadow 0.2s;
+        box-shadow: 0 2px 16px 0 rgba(44, 36, 101, 0.08);
+        border: 1.5px solid #f0e6ff;
+        padding: 10px;
+      }
+      .card-custom:hover {
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(140, 109, 224, 0.9);
+      }
+      .card-custom .card-img-top {
+        height: 220px;
+        background: #f6f6fb;
+        border-radius: 15px 15px 0 0;
+        position: relative;
+      }
+      .card-custom .card-img-top img.img-fluid {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 15px 15px 0 0;
+      }
+
+      .card-custom .card-body {
+        padding: 5px;
+      }
+      .card-custom .d-flex > div {
+        flex: 1 1 0;
+      }
+
+      .mini-body {
+        font-family: "Nunito", sans-serif;
+        font-size: 14px;
+        font-weight: 800 !important;
+      }
+      .mini-head {
+        font-size: 9px;
+      }
+
+      @media (max-width: 991.98px) {
+        .card-custom .card-img-top {
+          height: 320px;
+        }
+      }
+      @media (max-width: 575.98px) {
+        .card-custom {
+          border-radius: 12px;
+          padding: 10px;
+
+        }
+        .card-custom .card-img-top,
+        .card-custom .card-img-top img.img-fluid {
+          border-radius: 12px 12px 0 0;
+        }
+        .card-custom .card-img-top {
+          height: 200px;
+        }
+        .card-custom .card-body {
+          padding: 10px;
+        }
+        .g-5 {
+          gap: 0.1rem !important;
+          padding: 0;
+        }
+      }
+
+      .cta-gradient-box {
+        background: url("./assets/img/Markets/United_States/Abstract.png")
+            center top no-repeat,
+          linear-gradient(180deg, #9174e1 0%, #4e16d9 100%);
+        background-size: 100%, 100% 360px;
+        background-repeat: no-repeat, no-repeat;
+        background-position: top, top;
+        border-radius: 20px;
+        box-shadow: 0 2px 24px 0 rgba(44, 36, 101, 0.08);
+        position: relative;
+        overflow: hidden;
+        padding-top: 20px !important;
+        padding-bottom: 15px !important;
+      }
+      .cta-title {
+        color: #fff;
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      .cta-outline {
+        color: #fff;
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        -webkit-text-stroke: 0.5px #fff;
+        text-stroke: 0.5px #fff;
+        color: transparent;
+        margin-bottom: 0.1rem;
+      }
+      .cta-desc {
+        color: #fff;
+        font-size: 1.08rem;
+        max-width: 600px;
+      }
+      .cta-btn {
+        position: relative;
+        font-size: 1.25rem;
+        font-weight: 600;
+        padding: 0.6rem 2.6rem;
+        border-radius: 32px;
+        border: 1px solid #fff !important;
+        color: #fff !important;
+        background: transparent !important;
+        transition: background 0.2s, color 0.2s;
+        right: 40%;
+        box-shadow: 0 0 4px 1px rgba(120, 41, 217, 0.6),
+          /* outer glow */ inset 0 0 4px 1px rgba(255, 255, 255, 0.5); /* inner glow */
+      }
+      .cta-btn:hover,
+      .cta-btn:focus {
+        background: #fff !important;
+        color: #6b38e6 !important;
+        border-color: #fff !important;
+      }
+      @media (max-width: 991.98px) {
+        .cta-title {
+          font-size: 1.5rem;
+        }
+        .cta-outline {
+          font-size: 1.7rem;
+          -webkit-text-stroke: 0.3px #fff;
+        }
+        .cta-desc {
+          font-size: 0.7rem;
+          max-width: 400px;
+        }
+        .cta-btn {
+          font-size: 1rem;
+          padding: 0.6rem 1.5rem;
+          right: 0%;
+        }
+            .p-5{
+          padding:50px 0px !important;
+        }
+      }
+      @media (max-width: 575.98px) {
+        .cta-gradient-box {
+          border-radius: 14px;
+          padding: 1.5rem 0.7rem !important;
+        }
+        .cta-title {
+          font-size: 1.5rem;
+        }
+        .cta-outline {
+          font-size: 1.5rem;
+          -webkit-text-stroke: 0.3px #fff;
+        }
+        .cta-desc {
+          font-size: 0.81rem;
+        }
+        .cta-btn {
+          font-size: 0.95rem;
+          padding: 0.5rem 1.1rem;
+          right: 0%;
+        }
+        .p-5 {
+          padding: 0px !important;
+        }
+      }
+      .blend-multiply {
+        mix-blend-mode: multiply;
+      }
+      /* Footer Section Background and Spacing */
+      .footer-section {
+        background: #dfe2f9;
+        padding: 30px;
+        font-family: "Raleway", sans-serif;
+        color: #222;
+      }
+
+      /* Logo */
+      .footer-logo {
+        width: 120px;
+        margin-bottom: 1.2rem;
+      }
+
+      /* Tagline Paragraph */
+      .footer-section p {
+        font-size: 15px;
+        color: #222;
+        margin-bottom: 2.5rem;
+        font-weight: 500;
+      }
+
+      .social-icons {
+        gap: -10rem;
+      }
+      .social-icon {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        transition: transform 0.2s;
+      }
+      .social-icon:hover {
+        transform: scale(1.1);
+      }
+      .social-icon img {
+        width: 30px;
+        height: 30px;
+      }
+      .social-icons a:last-child {
+        margin-right: 0;
+      }
+
+      /* Footer Links */
+      .footer-links {
+        list-style: none;
+        padding-left: 0px;
+        margin-bottom: 0;
+      }
+      .footer-links li {
+        margin-bottom: 0.5rem;
+      }
+      .footer-links a {
+        color: #222;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        text-decoration: underline;
+        color: #9221e5;
+      }
+
+      /* Section Titles (Markets, Audiences, Address) */
+      .footer-section .fw-bold,
+      .footer-section strong {
+        font-weight: 700 !important;
+      }
+
+      /* Address Block */
+      .footer-address {
+        font-size: 15px;
+        margin-bottom: 1.5rem;
+        color: #222;
+        text-align: left;
+      }
+
+      .footer-illustration-video {
+        display: block;
+        width: 480px;
+        height: 300px;
+        border-radius: 0;
+        margin-left: -170px;
+        margin-bottom: -40px;
+      }
+
+      /* Copyright */
+      .footer-copy {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+      }
+
+      .col-lg-6.col-md-6.mb-4.mb-lg-0 {
+        padding: 0px 120px;
+      }
+
+      /* Responsive Styles */
+      @media (min-width: 992px) and (max-width: 1199.98px) {
+        .footer-section {
+          text-align: start;
+        }
+        .footer-address {
+          text-align: start;
+        }
+
+        .footer-illustration-video {
+          width: 400px;
+          margin-left: -145px;
+        }
+        .col-lg-6.col-md-6.mb-4.mb-lg-0 {
+          padding: 0px 50px;
+        }
+      }
+      @media (max-width: 769px) {
+        .footer-section {
+          padding: 30px 0px;
+        }
+        .footer-illustration-video {
+          width: 380px;
+          margin-left: -200px;
+        }
+        .footer-logo {
+          width: 120px;
+        }
+        .col-lg-6.col-md-6.mb-4.mb-lg-0 {
+          padding: 0px 40px;
+        }
+
+        .footer-section p,
+        .footer-address,
+        .footer-links li a {
+          font-size: 12px;
+        }
+        .footer-links li {
+          margin-bottom: 0px;
+        }
+      }
+     @media (max-width: 575px) {
+        .footer-illustration-video {
+          margin-left: 10px;
+          max-width: 100%;
+          width: 500px;
+        }
+          .footer-copy{
+            font-size: 8px;
+          }
+        .footer-section p,
+        .footer-address,
+        .footer-links li a {
+          font-size: 14px;
+        }
+        .footer-links {
+          padding-right: 20px;
+          padding-left: 0 !important;
+        }
+                .col-lg-6.col-md-6.mb-4.mb-lg-0 {
+          padding: 15px !important;
+        }
+        .cta-section{
+          padding: 50px 0px 100px;
+        }
+        .media-kit{
+          margin-bottom: 1rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+        <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-1 fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img
+            src="./assets/img/Logo/BILLION TAGS PNG.png"
+            alt="Billion Logo"
+            id="navbarLogo"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="company.html">Company</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="services.html">Services</a>
+            </li>
+            <!-- Markets Dropdown -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle active"
+                href="#"
+                id="marketsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Markets
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="marketsDropdown">
+                <li>
+                  <a class="dropdown-item active" href="market-us.html"
+                    >United States</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="market-canada.html">Canada</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="market-australia.html"
+                    >Australia</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="market-newzealand.html"
+                    >New Zealand</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="markets-europe.html">Europe</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="market-middleeast.html"
+                    >Middle East</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="market-asia.html"
+                    >Asia Pacific</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <!-- Audiences Dropdown -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="audiencesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Audiences
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="audiencesDropdown">
+                <li>
+                  <a class="dropdown-item" href="ethnicities.html"
+                    >Ethnicities</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="new-commers.html"
+                    >New Comers</a
+                  >
+                </li>
+                <li><a class="dropdown-item" href="pride.html">Pride</a></li>
+                <li>
+                  <a class="dropdown-item" href="religion.html">Religion</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="platforms.html">Platforms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="channels.html">Channels</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="brands.html">Brands</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="expertise.html">Expertise</a>
+            </li>
+            <!-- Blogs & Insights Dropdown -->
+            <li class="nav-item">
+              <a class="nav-link" href="blog.html">Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="utility.html">Utility</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <section class="p-5">
+      <div class="main-heading">
+        <img src="./assets/img/Markets/United_States/united-state.png" alt="" />
+      </div>
+      <!-- Header -->
+      <div class="header-text">
+        Ready for this? The U.S. welcomed
+        <b style="font-family: 'Nunito', sans-serif"
+          >47.8 million immigrants by 2023</b
+        >-a multicultural boom that's your gateway to diverse markets!
+      </div>
+
+      <!-- Graph Section -->
+      <div class="graph-section">
+        <div class="graph-card">
+          <img
+            src="./assets/img/Markets/United_States/Us - immigrants 1.png"
+            alt="US Immigrants Graph"
+            class="graph-img"
+          />
+        </div>
+      </div>
+      <!-- Immigrants Section -->
+      <div class="container position-relative">
+        <div class="immigrants-section">
+          <div class="immigrants-desc">
+            An exploration of U.S. immigrant data, revealing patterns in origin,
+            growth & demographic shifts over time.
+          </div>
+          <div class="immigrants-title-stroke">IMMIGRANTS</div>
+          <div class="split-line">Split Between These Immigrants:</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="row main-container">
+        <div class="left-container col-md-6">
+          <div class="main-title">The Galactic<br />Arrival!</div>
+          <div class="main-desc">
+            A breakdown of the population distribution among different ethnic
+            groups across the United States
+          </div>
+        </div>
+
+<div class="chart-section col-md-6 d-flex justify-content-center" id="pieTrigger">
+  <div class="chart-wrapper">
+    <div class="chart-container">
+      <canvas id="canadaChart"></canvas>
+      <div class="center-image">
+        <img
+          src="./assets/img/Homepage/Section 3/flags/united-states-flag-icon.png"
+          alt="Canada Flag"
+        />
+      </div>
+    </div>
   </div>
-  <script>
-    // Constants
-    const centerX = 150, centerY = 150;
-    const circleRadius = 50;
-    const sliceOuterRadius = 200;
-    const numSlices = 7;
-    const sliceAngle = 51.42;
-    const sliceColors = [
-      "#ffb347", "#ff6961", "#77dd77", "#aec6cf", "#f49ac2", "#cfcfc4", "#b39eb5"
-    ];
-    const sliceTexts = [
-      "Slice 1", "Slice 2", "Slice 3", "Slice 4", "Slice 5", "Slice 6", "Slice 7"
-    ];
+</div>
+      </div>
+    </section>
 
-    // Helper to create a slice path
-    function describeSlice(cx, cy, r1, r2, startAngle, endAngle) {
-      const rad = Math.PI / 180;
-      const x1 = cx + r1 * Math.cos(rad * startAngle);
-      const y1 = cy + r1 * Math.sin(rad * startAngle);
-      const x2 = cx + r2 * Math.cos(rad * startAngle);
-      const y2 = cy + r2 * Math.sin(rad * startAngle);
-      const x3 = cx + r2 * Math.cos(rad * endAngle);
-      const y3 = cy + r2 * Math.sin(rad * endAngle);
-      const x4 = cx + r1 * Math.cos(rad * endAngle);
-      const y4 = cy + r1 * Math.sin(rad * endAngle);
+    <!-- Immigration Growth Chart Section -->
+    <section class="container py-2">
+      <div class="text-center mb-5 mt-4">
+        <h2 class="fw-bold mb-3" style="font-size: 1.7rem">
+          A Rising Trend: Immigration Growth Over the Years
+        </h2>
+        <div class="text-black fw-bold" style="font-size: 0.9rem">
+          See how immigration has shaped our nation's diversity with a
+          year-by-year comparison of arrivals and ethnic representation
+        </div>
+      </div>
+      <div class="d-flex justify-content-center my-4">
+        <div class="w-100" style="max-width: 1050px">
+          <div
+            class="p-3 p-md-4"
+            style="
+              background: linear-gradient(180deg, #8c6de0 0%, #1e234b 100%);
+              border-radius: 20px;
+            "
+          >
+            <div class="text-center">
+              <img
+                src="./assets/img/Markets/United_States/last 10 years F1.png"
+                alt="Immigration Growth Chart"
+                class="img-fluid"
+                style="border-radius: 5px; max-width: 100%; height: auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="text-center text-secondary mt-5 mb-5"
+        style="font-size: 1.07rem"
+      >
+        A comprehensive analysis of the changing racial and ethnic composition
+        of the U.S. population over time.
+      </div>
+    </section>
 
-      return `
-        M ${x1} ${y1}
-        L ${x2} ${y2}
-        A ${r2} ${r2} 0 0 1 ${x3} ${y3}
-        L ${x4} ${y4}
-        A ${r1} ${r1} 0 0 0 ${x1} ${y1}
-        Z
-      `;
-    }
+    <section>
+      <div
+        class="immigration-future-section py-5 px-5 px-md-0 position-relative"
+      >
+        <!-- Watermark Stroke Text -->
+        <div class="immigration-watermark">
+          FUTURE OF <br />
+          IMMIGRATION
+          <br />
+          FUTURE OF <br />
+          IMMIGRATION
+        </div>
 
-    // Add slices to SVG
-    const slicesGroup = document.getElementById('slices');
-    const labelsGroup = document.getElementById('slice-labels');
-    let sliceElements = [];
-    let labelElements = [];
-    for (let i = 0; i < numSlices; i++) {
-      // Slice path
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("fill", sliceColors[i % sliceColors.length]);
-      path.setAttribute("stroke", "#222");
-      path.setAttribute("stroke-width", "1.5");
-      path.setAttribute(
-        "d",
-        describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, 270, 270)
-      );
-      slicesGroup.appendChild(path);
-      sliceElements.push(path);
+        <div class="container position-relative" style="z-index: 2">
+          <!-- Heading -->
+          <div class="text-center mb-5">
+            <h2
+              class="fw-normal size"
+              style="color: #fff; font-size: 2.2rem; line-height: 25px"
+            >
+              The Future of Immigration:
+            </h2>
 
-      // Text label
-      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      text.setAttribute("class", "slice-label");
-      text.textContent = sliceTexts[i];
-      labelsGroup.appendChild(text);
-      labelElements.push(text);
-    }
+            <h2
+              class="fw-bold mb-5 size"
+              style="color: #fff; font-size: 2.2rem"
+            >
+              What's Ahead?
+            </h2>
+          </div>
+          <!-- Chart Card -->
+          <div class="d-flex justify-content-center">
+            <div
+              class="bg-white shadow-sm px-md-0 pt-4"
+              style="border-radius: 20px; max-width: 980px; width: 100%"
+            >
+              <div>
+                <img
+                  src="./assets/img/Markets/United_States/Next 10 years F1.png"
+                  alt="Future Immigration Chart"
+                  class="img-fluid"
+                  style="border-radius: 18px; max-width: 100%; height: auto"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="text-center mt-5"
+            style="color: #e0e0e0; font-size: 1.05rem"
+          >
+            Projections of ethnic demographic trends in the United States for
+            the coming years.
+          </div>
+        </div>
+      </div>
+    </section>
 
-    // Animation function (runs once per entry)
-    let animationFrame;
-    function animateOnce() {
-      let frame = 0;
-      const totalFrames = 60;
-      function step() {
-        frame++;
-        let progress = Math.min(frame / totalFrames, 1); // 0..1
-        for (let i = 0; i < numSlices; i++) {
-          let baseAngle = i * sliceAngle;
-          let startAngle = 270 + progress * baseAngle;
-          let endAngle = startAngle + progress * sliceAngle;
-          sliceElements[i].setAttribute(
-            "d",
-            describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, startAngle, endAngle)
-          );
-          // Place text at the center of the slice arc
-          let midAngle = (startAngle + endAngle) / 2;
-          let labelRadius = (circleRadius + sliceOuterRadius) / 2;
-          let rad = Math.PI / 180;
-          let labelX = centerX + labelRadius * Math.cos(rad * midAngle);
-          let labelY = centerY + labelRadius * Math.sin(rad * midAngle);
-          labelElements[i].setAttribute("x", labelX);
-          labelElements[i].setAttribute("y", labelY);
-          labelElements[i].style.opacity = progress > 0.2 ? 1 : 0; // Fade in with animation
-        }
-        if (frame < totalFrames) {
-          animationFrame = requestAnimationFrame(step);
-        }
+    <section>
+      <div class="countries-section py-5">
+        <div class="container">
+          <!-- Heading -->
+          <div class="text-center mb-1">
+            <h2 class="fw-bold countries-title">Countries of Origin</h2>
+            <div class="countries-subtitle mb-5" sty>
+              Immigrants in the U.S. come from a diverse range of countries
+            </div>
+          </div>
+          <div class="row justify-content-center g-4">
+            <!-- Row of flags: Each flag is a col-3 (4 per row on mobile), col-md-2 (6 per row on tablet), col-lg-auto (auto on desktop) -->
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/bangladesh_640.png"
+                  alt="Bangladesh"
+                />
+              </div>
+              <div class="country-label">Bangladesh</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/china_640.png"
+                  alt="China"
+                />
+              </div>
+              <div class="country-label">China</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/india_640.png"
+                  alt="India"
+                />
+              </div>
+              <div class="country-label">India</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/indonesia_640.png"
+                  alt="Indonesia"
+                />
+              </div>
+              <div class="country-label">Indonesia</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/japan_640.png"
+                  alt="Japan"
+                />
+              </div>
+              <div class="country-label">Japan</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/korea_south_640.png"
+                  alt="South Korea"
+                />
+              </div>
+              <div class="country-label">South Korea</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/nepal_640.png"
+                  alt="Nepal"
+                />
+              </div>
+              <div class="country-label">Nepal</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/pakistan_640.png"
+                  alt="Pakistan"
+                />
+              </div>
+              <div class="country-label">Pakistan</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/philippines_640.png"
+                  alt="Phillipines"
+                />
+              </div>
+              <div class="country-label">Phillipines</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center left">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/sri_lanka_640.png"
+                  alt="Srilanka"
+                />
+              </div>
+              <div class="country-label">Srilanka</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Asian/vietnam_640.png"
+                  alt="Vietnam"
+                />
+              </div>
+              <div class="country-label">Vietnam</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/African/ghana_640.png"
+                  alt="Ghana"
+                />
+              </div>
+              <div class="country-label">Ghana</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/African/kenya_640.png"
+                  alt="Kenya"
+                />
+              </div>
+              <div class="country-label">Kenya</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/African/nigeria_640.png"
+                  alt="Nigeria"
+                />
+              </div>
+              <div class="country-label">Nigeria</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/African/somalia_640.png"
+                  alt="Somalia"
+                />
+              </div>
+              <div class="country-label">Somalia</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/African/south_africa_640.png"
+                  alt="South Africa"
+                />
+              </div>
+              <div class="country-label">South Africa</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center right">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Hispanic/argentina_640.png"
+                  alt="Argentina"
+                />
+              </div>
+              <div class="country-label">Argentina</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Hispanic/mexico_640.png"
+                  alt="Mexico"
+                />
+              </div>
+              <div class="country-label">Mexico</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Hispanic/peru_640.png"
+                  alt="Peru"
+                />
+              </div>
+              <div class="country-label">Peru</div>
+            </div>
+            <div class="col-3 col-md-2 col-lg-auto text-center">
+              <div class="flag-circle mb-2">
+                <img
+                  src="./assets/img/Markets/United_States/Flag/Hispanic/spain_640.png"
+                  alt="Spain"
+                />
+              </div>
+              <div class="country-label">Spain</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="brands-section position-relative py-5">
+        <div class="container position-relative z-2">
+          <!-- Heading and Subtitle -->
+          <div class="text-center text-white mb-5 mt-3">
+            <h2 class="fw-bold mb-3" style="font-size: 2.3rem">
+              Trusted by Leading Brands in United States
+            </h2>
+            <div style="font-size: 0.9rem">
+              We've had the privilege of working with some of the most
+              recognized brands, helping them connect with diverse communities
+              and expand their reach.
+            </div>
+          </div>
+        </div>
+        <!-- Logo Card -->
+        <div class="logo-card-container position-relative z-3">
+          <div class="container">
+            <div class="logo-card bg-white px-2 px-md-5 py-3 rounded-4 mx-auto">
+              <div class="row gy-5 align-items-center">
+                <!-- Repeat for each logo as in your image -->
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/McDonalds-Logo-PNG8.png"
+                    alt="McDonalds"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Toyota.png"
+                    alt="Toyota"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Spectrum.svg"
+                    alt="Spectrum"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/one minute saree.png"
+                    alt="OMS"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/malik eye care.png"
+                    alt="Malik Eye Care"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/WAU.svg"
+                    alt="Western Atlantic University School of Medicine"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/MDHHS.png"
+                    alt="MDHHS"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/I-Vaccinate-Logo.svg"
+                    alt="IVACCINATE"
+                    class="brand-logo"
+                  />
+                </div>
+
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/mileadsafe.svg"
+                    alt="mileadsafe"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Charles B wang.png"
+                    alt="Charles B. Wang Community Health Center"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/tata steel.svg"
+                    alt="Tata Steel World 25K Kolkata"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/vedantadelhihalfmarathon.svg"
+                    alt="Vedanta"
+                    class="brand-logo"
+                  />
+                </div>
+
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/dabur_logo.png"
+                    alt="Dabur"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Laxmihos.jpg"
+                    alt="Laxmi"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/desifreshfoods.png"
+                    alt="Desi Natural"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/dptvlogo-1.png"
+                    alt="Desi Play"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Maaya_logo_1_1_f8e24c8f-ad5f-4098-b068-2a997fe8d6d2.png"
+                    alt="Maaya"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/clickresearch.png"
+                    alt="Clicks"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/zifiti_logo_black.png"
+                    alt="Zifiti"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/Codeyoung.png"
+                    alt="Codeyoung"
+                    class="brand-logo"
+                  />
+                </div>
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2 text-center">
+                  <img
+                    src="./assets/img/Markets/United_States/US brands/clipperstart.png"
+                    alt="Start"
+                    class="brand-logo"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div
+          class="row align-items-center justify-content-center flex-lg-nowrap"
+        >
+          <div
+            class="col-12 col-lg-6 d-flex justify-content-center mb-1 mb-lg-0"
+          >
+            <div
+              class="case-img-box d-flex align-items-center justify-content-center"
+            >
+              <img
+                src="./assets/img/Markets/United_States/the-apic-reflective-hand copy.png"
+                alt="Hand with bubbles"
+                class="img-fluid case-img"
+              />
+            </div>
+          </div>
+          <!-- Text Section -->
+          <div class="col-12 col-lg-6 px-lg-2 text-center">
+            <h1
+              class="fw-bold mb-3"
+              style="
+                font-size: 4.5rem;
+                background: linear-gradient(to top, #9174e1, #4e16d9);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              Driving Success
+            </h1>
+            <h2
+              class="fw-semibold mb-3"
+              style="font-size: 2.1rem; color: #9174e1"
+            >
+              Case Studies from Our Brand Partnerships
+            </h2>
+            <div class="case-desc" style="font-size: 1.1rem; color: #222">
+              See how we’ve helped leading brands in United States connect with
+              diverse audiences &amp; achieve remarkable results !
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container py-2">
+        <div class="row gy-5">
+          <!-- Card 1 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/BMW.png"
+                  alt="BMW"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">BMW</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/toyota.png"
+                  alt="Toyota"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">TOYOTA</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/Volvo.png"
+                  alt="Volvo"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">VOLVO</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/Rangerover.png"
+                  alt="Range Rover"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">RANGE ROVER</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 5 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/BMW.png"
+                  alt="BMW"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">BMW</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 6 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/toyota.png"
+                  alt="Toyota"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">TOYOTA</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 7 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/Volvo.png"
+                  alt="Volvo"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">VOLVO</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 8 -->
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-0 card-custom">
+              <div
+                class="card-img-top position-relative overflow-hidden rounded-4"
+              >
+                <img
+                  src="./assets/img/Homepage/Section 8/Rangerover.png"
+                  alt="Range Rover"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                />
+              </div>
+              <div class="card-body text-center">
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div class="fw-bold mb-1 left-topic">RANGE ROVER</div>
+                  <div class="text-black right-topic">Automobile</div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-black small mb-2"
+                >
+                  <div>
+                    <div class="fw-bold mini-body">7.79M</div>
+                    <div class="mini-head">Impressions</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">7800+</div>
+                    <div class="mini-head">Screens</div>
+                  </div>
+                  <div>
+                    <div class="fw-bold mini-body">1000+</div>
+                    <div class="mini-head">Sites</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container p-5">
+        <div
+          class="cta-gradient-box d-flex flex-column flex-md-row align-items-center justify-content-between px-2 px-md-4 py-2 py-md-4"
+        >
+          <div class="flex-grow-1 text-center text-md-start">
+            <div class="cta-title">Want to Achieve the Same Success?</div>
+            <div class="cta-outline">REACH OUT TO US!</div>
+            <div class="cta-desc mb-md-0 mb-2">
+              If you're ready to drive growth and engage diverse audiences like
+              the leading brands we've worked with, contact us today!
+            </div>
+          </div>
+          <div class="text-center text-md-center">
+            <a href="#contact" class="cta-btn btn btn-outline-light"
+              >Contact Us</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer-section">
+      <!-- Footer Content -->
+      <footer>
+        <div class="footer-container position-relative">
+
+
+          <!-- Footer content -->
+          <div class="container-fluid position-relative content-on-video">
+            <div class="row align-items-start justify-content-between">
+              <div
+                class="col-lg-3 col-md-3 mb-4 mb-lg-0 text-lg-start text-md-start"
+              >
+                <img
+                  src="./assets/img/Logo/BILLION TAGS PNG.png"
+                  alt="Billiontags Logo"
+                  class="footer-logo"
+                />
+                <p class="mt-2 mb-3" style="max-width: 440px">
+                  We are Strategically Innovative. Technologically Advanced.
+                  Globally-Present. Socially Active. Truly Original &amp; Quite
+                  Ingenious. Billiontags is a creative factory!
+                </p>
+                <div class="mb-2 mt-5 fw-bold">Connect with us!</div>
+
+                <div class="d-flex justify-content-start align-items-center
+                flex-wrap social-icons blend-multiply ">
+                <a href="https://www.facebook.com/billiontags/" class="social-icon"
+                  ><img src="./assets/img/footer/FB.png" alt="Facebook"
+                /></a>
+                <a href="https://www.instagram.com/hey.billiontags/" class="social-icon"
+                  ><img src="./assets/img/footer/INSTA.png" alt="Instagram"
+                /></a>
+                <a href="https://www.threads.com/@hey.billiontags" class="social-icon"
+                  ><img src="./assets/img/footer/THREADS.png" alt="Threads"
+                /></a>
+                <a href="https://www.youtube.com/@Billiontags" class="social-icon"
+                  ><img src="./assets/img/footer/YT.png" alt="YouTube"
+                /></a>
+                <a href="https://x.com/billiontags" class="social-icon"
+                  ><img src="./assets/img/footer/X.png" alt="X"
+                /></a>
+                <a href="https://www.linkedin.com/company/billiontagsofficial/?viewAsMember=true" class="social-icon"
+                  ><img src="./assets/img/footer/LI.png" alt="LinkedIn"
+                /></a>
+                <a href="https://www.tiktok.com/@hey.billiontags?is_from_webapp=1&sender_device=pc" class="social-icon"
+                  ><img src="./assets/img/footer/TK.png" alt="TikTok"
+                /></a>
+              </div>
+            </div>
+            <!-- Center: Links -->
+            <div class="col-lg-6 col-md-6 mb-4 mb-lg-0">
+              <div class="row">
+                <div class="col-4 col-md-4 mb-3">
+                  <ul class="footer-links">
+                    <li>
+                      <a href="index.html"><strong>Home</strong></a>
+                    </li>
+                    <li>
+                      <a href="company.html"><strong>Company</strong></a>
+                    </li>
+                    <li>
+                      <a href="services.html"><strong>Services</strong></a>
+                    </li>
+                    <li>
+                      <a href="platforms.html"><strong>Platforms</strong></a>
+                    </li>
+                    <li>
+                      <a href="channels.html"><strong>Channels</strong></a>
+                    </li>
+                    <li>
+                      <a href="brands.html"><strong>Brands</strong></a>
+                    </li>
+                    <li>
+                      <a href="expertise.html"><strong>Expertise</strong></a>
+                    </li>
+                    <li>
+                      <a href="blog.html"><strong>Blogs</strong></a>
+                    </li>
+                    <li>
+                      <a href="utility.html"><strong>Utility</strong></a>
+                    </li>
+                    <li>
+                      <a href="contact.html"><strong>Contact Us</strong></a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-4 col-md-4 mb-3">
+                  <div class="fw-bold mb-2">Markets</div>
+                  <ul class="footer-links">
+                    <li><a href="market-us.html">United States</a></li>
+                    <li><a href="market-canada.html">Canada</a></li>
+                    <li><a href="market-australia.html">Australia</a></li>
+                    <li><a href="market-newzealand.html">New Zealand</a></li>
+                    <li><a href="markets-europe.html">Europe</a></li>
+                    <li><a href="market-middleeast.html">Middle East</a></li>
+                    <li><a href="market-asia.html">Asia-Pacific</a></li>
+                  </ul>
+                </div>
+                <div class="col-4 col-md-4 mb-3">
+                  <div class="fw-bold mb-2">Audiences</div>
+                  <ul class="footer-links">
+                    <li><a href="ethnicities.html">Ethnicities</a></li>
+                    <li><a href="new-commers.html">Newcomers</a></li>
+                    <li><a href="pride.html">Pride</a></li>
+                    <li><a href="religion.html">Religion</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- Right: Address and Illustration -->
+            <div
+              class="col-lg-3 col-md-3 text-lg-start text-center position-relative"
+            >
+              <div class="footer-address mb-3">
+                <div class="fw-bold mb-1">Address</div>
+                New Door No.782, Old No.427, 1st Floor, Anna Salai, Nandanam,
+                Chennai, Tamil Nadu - 600 035.
+              </div>
+              <video
+                src="assets/img/footer/Conversion.mp4"
+                class="footer-illustration-video blend-multiply mt-1"
+                autoplay
+                muted
+                loop
+                playsinline
+                poster="illustration-poster.jpg"
+              ></video>
+            </div>
+          </div>
+          <div class="footer-copy">
+            Copyrights © 2025 Billiontags | Digital Marketing Company | All
+            rights reserve
+          </div>
+        </div>
+      </footer>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const rawLabels = [
+    ["White", "58.4%"],
+    ["Hispanic or\n Latino", "19.5%"],
+    ["Black or\n African American", "14.4%"],
+    ["Asian\n American", "7.24%"],
+    ["Native American &\n Alaska Native", "1.3%"],
+    ["Native Hawaiian &\n Other Pacific Islander", "0.5%"],
+    ["Two or\n More Races", "3.1%"],
+  ];
+
+  const totalSlices = rawLabels.length;
+  const equalValue = +(100 / totalSlices).toFixed(2);
+  const values = Array(totalSlices).fill(equalValue);
+
+  const colors = [
+    "#FF7575", "#335CF4", "#5476F6", "#7490F8",
+    "#A5B7FA", "#B6C4FB", "#D6DEFD"
+  ];
+
+  let visibleSlices = 0;
+
+  const ctx = document.getElementById("canadaChart").getContext("2d");
+
+  // Shadow on slices
+  const originalDraw = Chart.controllers.pie.prototype.draw;
+  Chart.controllers.pie.prototype.draw = function () {
+    const ctx = this.chart.ctx;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
+    originalDraw.apply(this, arguments);
+    ctx.restore();
+  };
+
+  const chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: rawLabels.map(([label, percent]) => `${label} (${percent})`),
+      datasets: [{
+        data: [],
+        backgroundColor: colors,
+        borderColor: "transparent",
+        borderWidth: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 800,
+        easing: "easeOutQuint",
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          titleFont: { size: 14, weight: "400", family: "Raleway" },
+          bodyFont: { size: 13, family: "Raleway" },
+          borderColor: "#ffffff",
+          borderWidth: 1,
+          position: "nearest",
+          callbacks: {
+            label: (ctx) => {
+              const [label, percent] = rawLabels[ctx.dataIndex];
+              return `${label.replace("\n", " ")}: ${percent}`;
+            }
+          },
+          position: function (context) {
+            const chart = context.chart;
+            const tooltip = context.tooltip;
+            if (!tooltip.dataPoints.length) return { x: 0, y: 0 };
+
+            const dataIndex = tooltip.dataPoints[0].dataIndex;
+            const dataset = chart.data.datasets[0];
+            const total = dataset.data.reduce((a, b) => a + b, 0);
+            const cumulative = dataset.data.slice(0, dataIndex).reduce((a, b) => a + b, 0);
+            const value = dataset.data[dataIndex];
+            const angle = ((cumulative + value / 2) / total) * 2 * Math.PI;
+
+            const canvas = chart.canvas;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY);
+            const y = centerY + radius * Math.sin(angle) * 0.5;
+            let x = angle > Math.PI / 2 && angle < (3 * Math.PI) / 2
+              ? centerX - radius * 1.1
+              : centerX + radius * 1.1;
+
+            return { x: x, y: y };
+          },
+          caretPadding: 10,
+        },
+        datalabels: {
+          color: "#fff",
+          font: (ctx) => {
+            const width = window.innerWidth;
+            if (width <= 1024) return { size: 11, weight: "400" };
+            return { size: 13, weight: "500" };
+          },
+          formatter: (value, ctx) => {
+            const [label, percent] = rawLabels[ctx.dataIndex];
+            return `${label}\n${percent}`;
+          },
+          anchor: "center",
+          align: "center",
+          offset: 0,
+          rotation: (ctx) => {
+            const dataset = ctx.chart.data.datasets[0];
+            const total = dataset.data.reduce((a, b) => a + b, 0);
+            const value = dataset.data[ctx.dataIndex];
+            const cumulative = dataset.data.slice(0, ctx.dataIndex).reduce((a, b) => a + b, 0);
+            const angle = ((cumulative + value / 2) / total) * 360;
+            return angle - 90;
+          },
+          display: (ctx) => {
+            const chart = ctx.chart;
+            const active = chart.tooltip._active || [];
+            if (active.length) return active[0].index !== ctx.dataIndex;
+            return ctx.dataset.data[ctx.dataIndex] > 0;
+          },
+          textAlign: "center",
+          clamp: true,
+          clip: true,
+        },
+      },
+    },
+    plugins: [ChartDataLabels],
+  });
+
+  function updateChartSlices(count) {
+    chart.data.datasets[0].data = values.map((v, i) => (i < count ? v : 0));
+    chart.update();
+  }
+
+  function preventPageScroll() {
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+  }
+
+  function allowPageScroll() {
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
+  }
+
+  function autoAnimateSlices() {
+    preventPageScroll();
+
+    const interval = setInterval(() => {
+      if (visibleSlices < totalSlices) {
+        visibleSlices++;
+        updateChartSlices(visibleSlices);
+      } else {
+        clearInterval(interval);
+        allowPageScroll();
       }
-      step();
-    }
+    }, 400); // Speed per slice
+  }
 
-    // Reset slices to initial state
-    function resetSlices() {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-      for (let i = 0; i < numSlices; i++) {
-        sliceElements[i].setAttribute(
-          "d",
-          describeSlice(centerX, centerY, circleRadius, sliceOuterRadius, 270, 270)
-        );
-        // Place label at center, hide it
-        labelElements[i].setAttribute("x", centerX);
-        labelElements[i].setAttribute("y", centerY);
-        labelElements[i].style.opacity = 0;
-      }
-    }
+  const pieTrigger = document.getElementById("pieTrigger");
 
-    // Intersection Observer to trigger animation on each viewport entry
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateOnce();
-        } else {
-          resetSlices();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && visibleSlices === 0) {
+          autoAnimateSlices();
         }
       });
-    }, { threshold: 0.4 }); // Adjust threshold as needed
+    },
+    { threshold: 0.6 }
+  );
 
-    observer.observe(document.querySelector('.container'));
-  </script>
-</body>
+  observer.observe(pieTrigger);
+</script>
+
+  </body>
 </html>
